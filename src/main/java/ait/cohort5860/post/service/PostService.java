@@ -3,7 +3,7 @@ package ait.cohort5860.post.service;
 import ait.cohort5860.post.dto.NewCommentDto;
 import ait.cohort5860.post.dto.NewPostDto;
 import ait.cohort5860.post.dto.PostDto;
-import ait.cohort5860.post.dto.exeption.PostNotFoundException;
+import ait.cohort5860.post.dto.exception.PostNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;

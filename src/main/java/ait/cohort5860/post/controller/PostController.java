@@ -3,7 +3,7 @@ package ait.cohort5860.post.controller;
 import ait.cohort5860.post.dto.NewCommentDto;
 import ait.cohort5860.post.dto.NewPostDto;
 import ait.cohort5860.post.dto.PostDto;
-import ait.cohort5860.post.dto.exeption.PostNotFoundException;
+import ait.cohort5860.post.dto.exception.PostNotFoundException;
 import ait.cohort5860.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -132,7 +132,7 @@ public class PostController {
      * @return an iterable collection of posts containing the specified tags
      */
     @GetMapping("/posts/tags")
-    public Iterable<PostDto> findPostsByTags(@RequestParam("tags") List<String> tags) {
+    public Iterable<PostDto> findPostsByTags(@RequestParam("values") List<String> tags) {
         return postService.findPostsByTags(tags);
     }
 

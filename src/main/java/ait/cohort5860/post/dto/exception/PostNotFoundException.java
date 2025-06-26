@@ -1,4 +1,4 @@
-package ait.cohort5860.post.dto.exeption;
+package ait.cohort5860.post.dto.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
