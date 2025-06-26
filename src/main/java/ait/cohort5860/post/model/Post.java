@@ -31,7 +31,7 @@ public class Post {
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
     private int likes;
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     public Post(String title, String content, String author) {

@@ -6,13 +6,16 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDto {
-    @JsonProperty("user")
+//    @JsonProperty("user")
     private String username;
     private String message;
     private LocalDateTime dateCreated;
     private Integer likes;
+
+
 }

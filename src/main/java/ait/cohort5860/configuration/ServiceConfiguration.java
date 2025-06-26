@@ -1,5 +1,7 @@
 package ait.cohort5860.configuration;
 
+import ait.cohort5860.post.dto.CommentDto;
+import ait.cohort5860.post.model.Comment;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration.AccessLevel;
 import org.modelmapper.convention.MatchingStrategies;

@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "comments")
