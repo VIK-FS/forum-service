@@ -35,6 +35,24 @@ public class PostServiceImpl implements PostService {
         Post post = new Post(newPostDto.getTitle(), newPostDto.getContent(), author);
 
         // Handle tags
+        return getPostDto(newPostDto, post);
+    }
+
+    @Override
+    @Transactional
+    public PostDto updatePost(Long id, NewPostDto newPostDto) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        if (newPostDto.getTitle() != null && !newPostDto.getTitle().trim().isEmpty()) {
+            post.setTitle(newPostDto.getTitle());
+        }
+        if (newPostDto.getContent() != null && !newPostDto.getContent().trim().isEmpty()) {
+            post.setContent(newPostDto.getContent());
+        }
+
+        return getPostDto(newPostDto, post);
+    }
+
+    private PostDto getPostDto(NewPostDto newPostDto, Post post) {
         Set<String> tags = newPostDto.getTags();
         if (tags != null) {
             for (String tagName : tags) {
@@ -53,24 +71,6 @@ public class PostServiceImpl implements PostService {
         return modelMapper.map(post, PostDto.class);
     }
 
-    @Override
-    @Transactional
-    public PostDto updatePost(Long id, NewPostDto newPostDto) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        post.setTitle(newPostDto.getTitle());
-        post.setContent(newPostDto.getContent());
-
-        Set<String> newTags = newPostDto.getTags();
-        if (newTags != null) {
-//            post.getTags().clear();
-            for (String tagName : newTags) {
-                Tag tag = tagRepository.findById(tagName).orElseGet(() -> tagRepository.save(new Tag(tagName)));
-                post.addTags(tag);
-            }
-        }
-        post = postRepository.save(post);
-        return modelMapper.map(post, PostDto.class);
-    }
 
 
     @Override
