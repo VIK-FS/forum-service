@@ -62,7 +62,7 @@ public class PostServiceImpl implements PostService {
 
         Set<String> newTags = newPostDto.getTags();
         if (newTags != null) {
-            post.getTags().clear();
+//            post.getTags().clear();
             for (String tagName : newTags) {
                 Tag tag = tagRepository.findById(tagName).orElseGet(() -> tagRepository.save(new Tag(tagName)));
                 post.addTags(tag);
@@ -86,6 +86,7 @@ public class PostServiceImpl implements PostService {
 //        comment = commentRepository.save(comment);
         post.addComment(comment);
         post = postRepository.save(post);
+        return modelMapper.map(post, PostDto.class);
 
 //        // DEBUG: for mapping
 //        System.out.println("=== DEBUG INFO ===");
@@ -111,7 +112,6 @@ public class PostServiceImpl implements PostService {
 
 //        return result;
 
-        return modelMapper.map(post, PostDto.class);
     }
 
     @Override
@@ -131,25 +131,28 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PostDto> findPostsByAuthor(String author) {
-        return postRepository.findByAuthor(author).stream()
+        return postRepository.findByAuthorIgnoreCase(author)
                 .map(post -> modelMapper.map(post, PostDto.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PostDto> findPostsByTags(List<String> tags) {
-        return postRepository.findByTagsNameIn(tags).stream()
+        return postRepository.findByTagsNameInIgnoreCase(tags)
                 .map(post -> modelMapper.map(post, PostDto.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PostDto> findPostsByPeriod(LocalDate dateFrom, LocalDate dateTo) {
         LocalDateTime start = dateFrom.atStartOfDay();
         LocalDateTime end = dateTo.atTime(LocalTime.MAX);
-        return postRepository.findByDateCreatedBetween(start, end).stream()
+        return postRepository.findByDateCreatedBetween(start, end)
                 .map(post -> modelMapper.map(post, PostDto.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 }
