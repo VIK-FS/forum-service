@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/account")
+//@RequestMapping("/account")
 @RequiredArgsConstructor
 public class UserAccountController {
 
@@ -42,12 +42,12 @@ public class UserAccountController {
 
     @PatchMapping("/user/{login}/role/{role}")
     public RolesDto addRole(@PathVariable String login, @PathVariable String role) {
-        return userAccountService.changeRoles(login, role, true);
+        return userAccountService.changeRolesList(login, role, true);
     }
 
     @DeleteMapping("/user/{login}/role/{role}")
     public RolesDto removeRole(@PathVariable String login, @PathVariable String role) {
-        return userAccountService.changeRoles(login, role, false);
+        return userAccountService.changeRolesList(login, role, false);
     }
 
     @PatchMapping("/password")

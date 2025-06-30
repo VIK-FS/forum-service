@@ -7,6 +7,6 @@ public interface UserAccountService {
     UserDto getUser(String login);
     UserDto removeUser(String login);
     UserDto updateUser(String login, UserUpdateDto userUpdateDto);
-    RolesDto changeRoles(String login, String role, boolean isAddRole);
+    RolesDto changeRolesList(String login, String role, boolean isAddRole);
     void changePassword(String login, String newPassword);
 }
