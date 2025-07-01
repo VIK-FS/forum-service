@@ -18,7 +18,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EqualsAndHashCode(of = {"login"})
+@EqualsAndHashCode(of = "login")
 @Document(collection = "users")
 public class UserAccount {
     @Id

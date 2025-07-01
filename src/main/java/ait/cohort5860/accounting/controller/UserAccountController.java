@@ -1,6 +1,9 @@
 package ait.cohort5860.accounting.controller;
 
-import ait.cohort5860.accounting.dto.*;
+import ait.cohort5860.accounting.dto.RolesDto;
+import ait.cohort5860.accounting.dto.UserDto;
+import ait.cohort5860.accounting.dto.UserUpdateDto;
+import ait.cohort5860.accounting.dto.UserRegisterDto;
 import ait.cohort5860.accounting.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-//@RequestMapping("/account")
+@RequestMapping("/account")
 @RequiredArgsConstructor
 public class UserAccountController {
-
     private final UserAccountService userAccountService;
 
     @PostMapping("/register")
     public UserDto register(@RequestBody UserRegisterDto userRegisterDto) {
+        System.out.println("Register endpoint called");
         return userAccountService.register(userRegisterDto);
     }
 
@@ -25,10 +28,6 @@ public class UserAccountController {
         return userAccountService.getUser(principal.getName());
     }
 
-    @GetMapping("/user/{login}")
-    public UserDto getUser(@PathVariable String login) {
-        return userAccountService.getUser(login);
-    }
 
     @DeleteMapping("/user/{login}")
     public UserDto removeUser(@PathVariable String login) {
@@ -54,5 +53,9 @@ public class UserAccountController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void changePassword(Principal principal, @RequestHeader("X-Password") String newPassword) {
         userAccountService.changePassword(principal.getName(), newPassword);
+    }
+    @GetMapping("/user/{login}")
+    public UserDto getUser(@PathVariable String login) {
+        return userAccountService.getUser(login);
     }
 }

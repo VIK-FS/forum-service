@@ -82,8 +82,7 @@ public class PostServiceImpl implements PostService {
         }
         Comment comment = new Comment(commenter, newCommentDto.getMessage());
         comment.setDateCreated(LocalDateTime.now());
-        comment.setPost(post);
-//        comment = commentRepository.save(comment);
+        comment.setPost(post); //
         post.addComment(comment);
         post = postRepository.save(post);
         return modelMapper.map(post, PostDto.class);
