@@ -2,9 +2,11 @@ package ait.cohort5860.security;
 
 
 import ait.cohort5860.accounting.model.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,7 +18,10 @@ import org.springframework.security.web.access.expression.WebExpressionAuthoriza
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
+    private final CustomWebSecurity webSecurity;
+
     @Bean
     SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
         http.httpBasic(Customizer.withDefaults());
@@ -34,9 +39,19 @@ public class SecurityConfiguration {
                 .access(new WebExpressionAuthorizationManager("#author == authentication.name"))
                 .requestMatchers(HttpMethod.PATCH, "/forum/post/{id}/comment/{commenter}")
                 .access(new WebExpressionAuthorizationManager("#commenter == authentication.name"))
+                .requestMatchers(HttpMethod.PATCH, "/forum/post/{id}")
+                .access(((authentication, context) ->
+                        new AuthorizationDecision(webSecurity.checkPostAuthor(context.getVariables().get("id"), authentication.get().getName()))))
+
+                .requestMatchers(HttpMethod.DELETE, "/forum/post/{id}")
+                .access((authentication, context) -> {
+                    boolean isAuthor = webSecurity.checkPostAuthor(context.getVariables().get("id"),
+                            authentication.get().getName());
+                    boolean isModerator = context.getRequest().isUserInRole(Role.MODERATOR.name());
+                    return new AuthorizationDecision(isAuthor || isModerator);
+                })
                 .anyRequest()
                 .authenticated());
-
         return http.build();
     }
 
