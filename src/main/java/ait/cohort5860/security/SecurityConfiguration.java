@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.debug.DebugFilter;
 
 
 @Configuration
@@ -22,23 +24,39 @@ import org.springframework.security.web.access.expression.WebExpressionAuthoriza
 public class SecurityConfiguration {
     private final CustomWebSecurity webSecurity;
 
+
     @Bean
     SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
         http.httpBasic(Customizer.withDefaults());
         http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/account/register", "/forum/posts/**")
-                .permitAll()
+                        .requestMatchers("/account/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/account/register").permitAll()
+                .requestMatchers("/forum/posts/**").permitAll()
+
                 .requestMatchers("/account/user/{login}/role/{role}")
                 .hasRole(Role.ADMINISTRATOR.name())
+
                 .requestMatchers(HttpMethod.PATCH, "/account/user/{login}")
                 .access(new WebExpressionAuthorizationManager("#login == authentication.name"))
+
                 .requestMatchers(HttpMethod.DELETE, "/account/user/{login}")
                 .access(new WebExpressionAuthorizationManager("#login == authentication.name or hasRole('ADMINISTRATOR')"))
+
+                .requestMatchers(HttpMethod.PATCH, "/password")
+                .authenticated()
+
+                .requestMatchers(HttpMethod.GET, "/account/user/{login}")
+                .access(new WebExpressionAuthorizationManager("#login == authentication.name or hasRole('ADMINISTRATOR')"))
+
+                //forum
+
                 .requestMatchers(HttpMethod.POST, "/forum/post/{author}")
                 .access(new WebExpressionAuthorizationManager("#author == authentication.name"))
+
                 .requestMatchers(HttpMethod.PATCH, "/forum/post/{id}/comment/{commenter}")
                 .access(new WebExpressionAuthorizationManager("#commenter == authentication.name"))
+
                 .requestMatchers(HttpMethod.PATCH, "/forum/post/{id}")
                 .access(((authentication, context) ->
                         new AuthorizationDecision(webSecurity.checkPostAuthor(context.getVariables().get("id"), authentication.get().getName()))))
@@ -51,7 +69,8 @@ public class SecurityConfiguration {
                     return new AuthorizationDecision(isAuthor || isModerator);
                 })
                 .anyRequest()
-                .authenticated());
+                .authenticated()
+        );
         return http.build();
     }
 

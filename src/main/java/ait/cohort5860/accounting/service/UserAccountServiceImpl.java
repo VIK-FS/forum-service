@@ -26,7 +26,8 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
     @Override
     public UserDto register(UserRegisterDto userRegisterDto) {
         if (userAccountRepository.existsById(userRegisterDto.getLogin())) {
-            throw new UserExistsException();
+            System.out.println("User already exists");
+            throw new UserExistsException("User already exists");
         }
         UserAccount userAccount = modelMapper.map(userRegisterDto, UserAccount.class);
         userAccount.addRole("USER");
@@ -67,13 +68,16 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
     public RolesDto changeRolesList(String login, String role, boolean isAddRole) {
         UserAccount userAccount = userAccountRepository.findById(login).orElseThrow(UserNotFoundException::new);
         try {
+            Role.valueOf(role.toUpperCase());
             if (isAddRole) {
-                userAccount.addRole(role);
+                userAccount.addRole(role.toUpperCase());
             } else {
-                userAccount.removeRole(role);
+                userAccount.removeRole(role.toUpperCase());
             }
+        } catch (IllegalArgumentException e) {
+            throw new InvalidDataException("Invalid role: " + role);
         } catch (Exception e) {
-            throw new InvalidDataException();
+            throw new InvalidDataException("Error managing role: " + e.getMessage());
         }
         userAccountRepository.save(userAccount);
         return modelMapper.map(userAccount, RolesDto.class);
@@ -82,7 +86,8 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
     @Override
     public void changePassword(String login, String newPassword) {
         UserAccount userAccount = userAccountRepository.findById(login).orElseThrow(UserNotFoundException::new);
-        userAccount.setPassword(newPassword);
+//        String encodedPassword = passwordEncoder.encode(newPassword); //
+        userAccount.setPassword(newPassword); // newPassword
         userAccountRepository.save(userAccount);
 
     }

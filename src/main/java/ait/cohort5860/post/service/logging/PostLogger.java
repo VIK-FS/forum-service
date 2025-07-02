@@ -1,4 +1,4 @@
-package ait.cohort5860.post.service.loging;
+package ait.cohort5860.post.service.logging;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

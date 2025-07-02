@@ -1,6 +1,5 @@
-package ait.cohort5860.post.service.loging;
+package ait.cohort5860.post.service.logging;
 
-import ait.cohort5860.post.dto.PostDto;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,13 +16,17 @@ public class PostServiceLogger {
     public void findById(Long id) {
     }
 
-    @Pointcut("@annotation(ait.cohort5860.post.service.loging.PostLogger)")
+    @Pointcut("@annotation(ait.cohort5860.post.service.logging.PostLogger)")
     public void annotatePostLogger() {
     }
 
-    @Pointcut("execution(public Iterable<ait.cohort5860.post.dto.PostDto> ait.cohort5860.post.service.PostServiceImpl.findPosts*(..))")
-    public void bulkFindPostsLogger() {
-    }
+    @Pointcut("execution(public java.util.List<ait.cohort5860.post.dto.PostDto> ait.cohort5860.post.service.PostServiceImpl.findPosts*(..))")
+    public void bulkFindPostsLogger() {}
+
+    // A simpler pointcut is for all methods of the PostServiceImpl* class.
+//    @Pointcut("execution(public * ait.cohort5860.post.service.PostServiceImpl.*(..))")
+//    public void allMethods() {
+//    }
 
     @Before("findById(id)")
     public void longFindById(Long id) {
@@ -49,4 +52,17 @@ public class PostServiceLogger {
         log.info("method: {}, time: {} ms", joinPoint.getSignature().getName(), end - start);
         return result;
     }
+
+//    @Around("allMethods()")
+//    public Object logAllMethods(ProceedingJoinPoint joinPoint) throws Throwable {
+//        log.info("AROUND allMethods: Method {} started", joinPoint.getSignature().getName());
+//        long start = System.currentTimeMillis();
+//        Object result = joinPoint.proceed();
+//        long end = System.currentTimeMillis();
+//        log.info("ALL METHODS: method: {}, time: {} ms", joinPoint.getSignature().getName(), end - start);
+//        return result;
+//    }
+
+
+
 }
